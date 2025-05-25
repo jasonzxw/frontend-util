@@ -1,2 +1,2 @@
 # frontend-util
-This is frontend utile method package
+This is frontend util method package
