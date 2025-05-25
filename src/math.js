@@ -36,9 +36,42 @@ function getFloat(num) {
     return num - getInteger(num);
 }
 
+/**
+ * @description This function returns the radian to angle.
+ * @param {*} radian 
+ * @returns 
+ */
+function radianToAngle(radian) {
+    return radian * (180 / Math.PI);
+}
+
+/**
+ * @description This function returns the angle to radian.
+ * @param {*} angle 
+ * @returns 
+ */
+function angleToRadian(angle) {
+    return angle * (Math.PI / 180);
+}
+
+/**
+ * @description This function returns the radian between point and  center of a circle .
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} centerX 
+ * @param {*} centerY 
+ * @returns 
+ */
+function getRadian(x, y, centerX, centerY) {
+    return Math.atan2(y - centerY, x - centerX);
+}
+
 module.exports = {
     getRandomInt,
     getRandomFromArray,
     getInteger,
-    getFloat
+    getFloat,
+    radianToAngle,
+    angleToRadian,
+    getRadian
 }
