@@ -69,7 +69,12 @@ function put(url, data) {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText));
+                    try{
+                        const data = JSON.parse(xhr.responseText);
+                        resolve(data);
+                    }catch(e){
+                        reject({ message: '响应数据解析失败' });
+                    }
                 } else {
                     reject(new Error(`Request failed with status ${xhr.status}`));
                 }
