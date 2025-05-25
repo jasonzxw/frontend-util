@@ -1,5 +1,9 @@
 const Date = require('./src/date.js');
+const Num = require('./src/num.js');
+const math = require('./src/math.js');
 
-modules.exports = {
-    Date
+module.exports = {
+    Date,
+    Num,
+    math,
 }

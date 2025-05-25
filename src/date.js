@@ -111,7 +111,7 @@ function getSpecificDateTime(date,format){
     return getFormattedDate(date,format) + ' ' + getFormattedTime(date,format);
 }
 
-modules.exports = {
+module.exports = {
     getCurrentLocalDateTime,
     getSpecificLocalDateTime,
     getCurrentLocalDate,
