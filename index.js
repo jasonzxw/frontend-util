@@ -1,5 +1,5 @@
 const Date = require('./src/date.js');
-const Num = require('./src/num.js');
+const Num = require('./src/number.js');
 const math = require('./src/math.js');
 const env = require('./src/env.js');
 const dom = require('./src/dom.js');
