@@ -79,6 +79,25 @@ function divideFloat(num1, num2) {
     return (num1 / num2) * Math.pow(10, totalDecimalPlaces);
 }
 
+/**
+ * @description: This function formats a number with commas as thousands separators and two decimal places.
+ * @param {*} num 
+ * @returns {string}
+ */
+function formatNumber(num) {
+    return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+/**
+ * @description: This function converts a number with commas to a decimal number.
+ * @param {*} num 
+ * @returns 
+ */
+function convertToDecimal(num) {
+    return parseFloat(num.replace(/,/g, ''));
+}
+
+
 
 module.exports = {
     getNthLargest,
@@ -87,4 +106,6 @@ module.exports = {
     subtractFloat,
     multiplyFloat,
     divideFloat,
+    formatNumber,
+    convertToDecimal
 }
