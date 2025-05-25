@@ -7,6 +7,7 @@ const Queue = require('./src/Queue.js');
 const Stack = require('./src/Stack.js');
 const Grahp = require('./src/Graph.js');
 const LinkedList = require('./src/LinkedList.js');
+const Request = require('./src/Request.js');
 module.exports = {
     Date,
     Num,
@@ -16,5 +17,6 @@ module.exports = {
     Queue,
     Stack,
     Grahp,
-    LinkedList
+    LinkedList,
+    Request
 }
