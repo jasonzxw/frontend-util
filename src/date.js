@@ -1,0 +1,125 @@
+/**
+ * @description This file contains functions to get the current local date and time in various formats.
+ * @returns 
+ */
+function getCurrentLocalDateTime(){
+    const date = new Date();
+    return date.toLocaleString();
+}
+
+/**
+ * @description This function returns the specific local date.
+ * @param {*} date 
+ * @returns 
+ */
+function getSpecificLocalDateTime(date){
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return date.toLocaleString(undefined, options);
+}
+
+
+/**
+ * @description This function returns the current local date.
+ * @returns {string} Current date in the format YYYY-MM-DD
+ */
+function getCurrentLocalDate(){
+    const date = new Date();
+    return date.toLocaleDateString();
+}
+
+/**
+ * @description This function returns the specific date in the format YYYY/MM/DD.
+ * @param {*} date 
+ * @returns 
+ */
+function getSpecificLocalDate(date){
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return date.toLocaleDateString(undefined, options);
+}
+
+/**
+ * @description This function returns the current local time.
+ * @returns {string} Current time in the format HH:MM:SS
+ */
+function getCurrentLocalTime(){
+    const date = new Date();
+    return date.toLocaleTimeString();
+}
+
+/**
+ * @description This function returns the specific time in the format HH:MM:SS.
+ * @param {*} date 
+ * @returns 
+ */
+function getSpecificTime(date){
+    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return date.toLocaleTimeString(undefined, options);
+}
+
+console.log(getSpecificTime(new Date()));
+
+/**
+ * 
+ * @returns {string} Current  UTC date
+ */
+function getUtcTime(){
+    const date = new Date();
+    return date.toUTCString();
+}
+
+/**
+ * @description This function returns the specific format date.
+ * @param {*} date 
+ * @param {*} format 
+ * @returns 
+ */
+function getFormattedDate(date,format){
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // Months are zero-based
+    const day = date.getDate();
+    return [
+        year,
+        month < 10 ? '0' + month : month,
+        day < 10 ? '0' + day : day
+    ].join(format);
+}
+
+/**
+ * @description This function returns the specific format time.
+ * @param {*} date 
+ * @param {*} format 
+ * @returns 
+ */
+function getFormattedTime(date,format){
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return [
+        hours < 10 ? '0' + hours : hours,
+        minutes < 10 ? '0' + minutes : minutes,
+        seconds < 10 ? '0' + seconds : seconds
+    ].join(format);
+}
+
+/**
+ * @description This function returns the specific format date and time.
+ * @param {*} date 
+ * @param {*} format 
+ * @returns 
+ */
+function getSpecificDateTime(date,format){
+    return getFormattedDate(date,format) + ' ' + getFormattedTime(date,format);
+}
+
+modules.exports = {
+    getCurrentLocalDateTime,
+    getSpecificLocalDateTime,
+    getCurrentLocalDate,
+    getSpecificLocalDate,
+    getCurrentLocalTime,
+    getSpecificTime,
+    getUtcTime,
+    getFormattedDate,
+    getFormattedTime,
+    getSpecificDateTime
+}

@@ -1,0 +1,23 @@
+{
+  "name": "frontend-util-everything",
+  "version": "1.0.0",
+  "description": "This is frntend util package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonzxw/frontend-util.git"
+  },
+  "keywords": [
+    "util",
+    "package"
+  ],
+  "author": "jason_zuo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jasonzxw/frontend-util/issues"
+  },
+  "homepage": "https://github.com/jasonzxw/frontend-util#readme"
+}
