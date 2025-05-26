@@ -188,6 +188,23 @@ function addEventListener(target, event, callback,options={
   }
 }
 
+/**
+ * @description Downloads a file with the given data and file name.
+ * @param {*} data 
+ * @param {*} fileName 
+ */
+function downloadFile(data,fileName){
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || 'download';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
 module.exports ={
     getDomHeight,
     getDomWidth,
@@ -205,5 +222,6 @@ module.exports ={
     hasChild,
     documentHasFocus,
     getElementPosition,
-    addEventListener
+    addEventListener,
+    downloadFile
 }

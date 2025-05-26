@@ -4,6 +4,31 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
+function getAugmentedNamespace(n) {
+  if (Object.prototype.hasOwnProperty.call(n, '__esModule')) return n;
+  var f = n.default;
+	if (typeof f == "function") {
+		var a = function a () {
+			if (this instanceof a) {
+        return Reflect.construct(f, arguments, this.constructor);
+			}
+			return f.apply(this, arguments);
+		};
+		a.prototype = f.prototype;
+  } else a = {};
+  Object.defineProperty(a, '__esModule', {value: true});
+	Object.keys(n).forEach(function (k) {
+		var d = Object.getOwnPropertyDescriptor(n, k);
+		Object.defineProperty(a, k, d.get ? d : {
+			enumerable: true,
+			get: function () {
+				return n[k];
+			}
+		});
+	});
+	return a;
+}
+
 /**
  * @description This file contains functions to get the current local date and time in various formats.
  * @returns 
@@ -668,6 +693,23 @@ function requireDom () {
 	  }
 	}
 
+	/**
+	 * @description Downloads a file with the given data and file name.
+	 * @param {*} data 
+	 * @param {*} fileName 
+	 */
+	function downloadFile(data,fileName){
+	    const blob = new Blob([data], { type: 'application/octet-stream' });
+	    const url = URL.createObjectURL(blob);
+	    const a = document.createElement('a');
+	    a.href = url;
+	    a.download = fileName || 'download';
+	    document.body.appendChild(a);
+	    a.click();
+	    document.body.removeChild(a);
+	    URL.revokeObjectURL(url);
+	}
+
 	dom ={
 	    getDomHeight,
 	    getDomWidth,
@@ -685,9 +727,233 @@ function requireDom () {
 	    hasChild,
 	    documentHasFocus,
 	    getElementPosition,
-	    addEventListener
+	    addEventListener,
+	    downloadFile
 	};
 	return dom;
+}
+
+/**
+ * @description Pauses execution for a specified number of milliseconds.
+ * @param {*} ms 
+ * @returns {Promise}
+ */
+
+var asyncUtil;
+var hasRequiredAsyncUtil;
+
+function requireAsyncUtil () {
+	if (hasRequiredAsyncUtil) return asyncUtil;
+	hasRequiredAsyncUtil = 1;
+	function sleep(ms) {
+	  return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	asyncUtil = {
+	    sleep
+	};
+	return asyncUtil;
+}
+
+/**
+ * @description Generates an array of numbers starting from a given number.
+ * @param {*} n 
+ * @param {*} start 
+ * @returns {Array}
+ */
+function generateNumbers(n, start = 1) {
+    return Array.from({ length: n }, (_, i) => start + i);
+}
+
+/**
+ * @description Flattens a nested array up to a specified depth.
+ * @param {*} arr 
+ * @param {*} depth 
+ * @returns {Array}
+ */
+function flattenArray(arr, depth = 1) {
+    return depth > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flattenArray(val, depth - 1) : val), []) : arr.slice();
+}
+
+/**
+ * @description Removes duplicates from an array.
+ * @param {*} arr 
+ * @param {*} value 
+ * @returns 
+ */
+function removeDuplicates(arr, value) {
+    return arr.filter(item => item !== value);
+}
+
+/**
+ * @description Finds all the index of the first occurrence of a value in an array.
+ * @param {*} arr 
+ * @param {*} value 
+ * @returns 
+ */
+function findAllIndexes(arr, value) {
+    return arr.reduce((acc, item, index) => {
+        if (item === value) acc.push(index);
+        return acc;
+    }, []);
+}
+
+/**
+ * @description Checks if an array is empty.
+ * @param {*} arr 
+ * @returns {boolean}
+ */
+function isEmptyArray(arr) {
+    return Array.isArray(arr) && arr.length === 0;
+}
+
+/**
+ * @description sorts an array in ascending order.
+ * @param {*} arr 
+ * @returns 
+ */
+function sortArrayAscending(arr) {
+    return arr.slice().sort((a, b) => a - b);
+}
+
+/**
+ * @description sorts an array in descending order.
+ * @param {*} arr 
+ * @returns 
+ */
+function sortArrayDescending(arr) {
+    return arr.slice().sort((a, b) => b - a);
+}
+
+/**
+ * @description bubble sort algorithm implementation.
+ * @param {*} arr 
+ * @returns 
+ */
+function bubbleSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len - 1; i++) {
+        for (let j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
+    }
+    return arr;
+}
+
+/**
+ * @description Removes all duplicate values from an array, returning a new array with unique values.
+ * @param {*} arr 
+ * @returns 
+ */
+function uniqueArray(arr) {
+    return Array.from(new Set(arr));
+}
+
+module.exports = {
+    generateNumbers,
+    flattenArray,
+    removeDuplicates,
+    findAllIndexes,
+    isEmptyArray,
+    sortArrayAscending,
+    sortArrayDescending,
+    bubbleSort,
+    uniqueArray
+};
+
+var arr = /*#__PURE__*/Object.freeze({
+	__proto__: null,
+	bubbleSort: bubbleSort,
+	findAllIndexes: findAllIndexes,
+	flattenArray: flattenArray,
+	generateNumbers: generateNumbers,
+	isEmptyArray: isEmptyArray,
+	removeDuplicates: removeDuplicates,
+	sortArrayAscending: sortArrayAscending,
+	sortArrayDescending: sortArrayDescending,
+	uniqueArray: uniqueArray
+});
+
+var require$$6 = /*@__PURE__*/getAugmentedNamespace(arr);
+
+/**
+ * @description Deep clones an object or array.
+ * @param {*} target 
+ * @returns 
+ */
+
+var obj;
+var hasRequiredObj;
+
+function requireObj () {
+	if (hasRequiredObj) return obj;
+	hasRequiredObj = 1;
+	function deepClone(target) {
+	    if (target === null || typeof target !== 'object') {
+	        return target;
+	    }
+
+	    if (typeof target !== "object" || target === null) return target;
+	    const clone = Array.isArray(target) ? [] : {};
+	    for (const key in target) clone[key] = deepClone(target[key]);
+	    return clone;
+	}
+
+	/**
+	 * @description Shallow clones an object or array.
+	 * @param {*} target 
+	 * @returns 
+	 */
+	function shallowClone(target) {
+	    if (target === null || typeof target !== 'object') {
+	        return target;
+	    }
+	    return Array.isArray(target) ? [...target] : { ...target };
+	}
+
+	/**
+	 * @description Checks if two objects or arrays are equal.
+	 * @param {*} obj1 
+	 * @param {*} obj2 
+	 * @returns 
+	 */
+	function isEqual(obj1, obj2) {
+	    if (obj1 === obj2) return true;
+	    if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) return false;
+
+	    const keys1 = Object.keys(obj1);
+	    const keys2 = Object.keys(obj2);
+
+	    if (keys1.length !== keys2.length) return false;
+
+	    for (const key of keys1) {
+	        if (!keys2.includes(key) || !isEqual(obj1[key], obj2[key])) {
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
+
+	/**
+	 * @description inherits the prototype of a parent class for a child class.
+	 * @param {*} child 
+	 * @param {*} parent 
+	 */
+	function inheritPrototype(child, parent) {
+	    child.prototype = Object.create(parent.prototype);
+	    child.prototype.constructor = child;
+	}
+
+	obj ={
+	    deepClone,
+	    shallowClone,
+	    isEqual,
+	    inheritPrototype
+	};
+	return obj;
 }
 
 /**
@@ -1319,17 +1585,27 @@ function requireFrontendUtil () {
 	const math = requireMath();
 	const env = requireEnv();
 	const dom = requireDom();
+	const AsyncUtil = requireAsyncUtil();
+	const Arr = require$$6;
+	const Obj = requireObj();
+
 	const Queue = requireQueue();
 	const Stack = requireStack();
 	const Grahp = requireGraph();
 	const LinkedList = requireLinkedList();
+
 	const Request = requireRequest();
+
 	frontendUtil = {
 	    Date,
 	    Num,
 	    math,
 	    env,
 	    dom,
+	    AsyncUtil,
+	    Arr,
+	    Obj,
+
 	    Queue,
 	    Stack,
 	    Grahp,
