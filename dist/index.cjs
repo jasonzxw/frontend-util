@@ -902,7 +902,7 @@ function requireDom () {
 	async function copyToClipboard(text) {
 	  try {
 	    if (navigator.clipboard && navigator.clipboard.writeText) {
-	      await navigator.clipboard.writeText('复制的文本');
+	      await navigator.clipboard.writeText(text);
 	      return true;
 	    } else {
 	      const textArea = document.createElement('textarea');
