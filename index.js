@@ -6,6 +6,7 @@ const dom = require('./src/dom.js');
 const AsyncUtil = require('./src/asyncUtil.js');
 const Arr = require('./src/arr.js');
 const Obj = require('./src/obj.js');
+const Is = require('./src/is.js');
 
 const Queue = require('./src/Queue.js');
 const Stack = require('./src/Stack.js');
@@ -23,6 +24,7 @@ module.exports = {
     AsyncUtil,
     Arr,
     Obj,
+    Is,
 
     Queue,
     Stack,

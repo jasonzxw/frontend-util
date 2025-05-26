@@ -574,15 +574,15 @@ function requireDom () {
 	 * @returns {object}
 	 */
 	function mousePositioninElement(element, event) {
-	    const { x, y } = getMousePosition(event);
-	    if(!mouseInElement(element, x, y)) {
-	        return null;
-	    }
-	    const rect = element.getBoundingClientRect();
-	    return {
-	        x: x - rect.left,
-	        y: y - rect.top
-	    };
+	  const { x, y } = getMousePosition(event);
+	  if (!mouseInElement(element, x, y)) {
+	    return null;
+	  }
+	  const rect = element.getBoundingClientRect();
+	  return {
+	    x: x - rect.left,
+	    y: y - rect.top
+	  };
 	}
 
 	/**
@@ -602,7 +602,7 @@ function requireDom () {
 	 * @returns {number}
 	 */
 	function getRealElementHeight(element) {
-	    return element.scrollHeight;
+	  return element.scrollHeight;
 	}
 
 	/**
@@ -611,7 +611,7 @@ function requireDom () {
 	 * @returns {number}
 	 */
 	function getRealElementWidth(element) {
-	    return element.scrollWidth;
+	  return element.scrollWidth;
 	}
 
 	/**
@@ -620,7 +620,7 @@ function requireDom () {
 	 * @returns {boolean}
 	 */
 	function isElVisible(el) {
-	    return el.offsetWidth > 0 && el.offsetHeight > 0;
+	  return el.offsetWidth > 0 && el.offsetHeight > 0;
 	}
 
 	/**
@@ -628,9 +628,9 @@ function requireDom () {
 	 * @param {*} el 
 	 */
 	function removeElement(el) {
-	    if (el && el.parentNode) {
-	        el.parentNode.removeChild(el);
-	    }
+	  if (el && el.parentNode) {
+	    el.parentNode.removeChild(el);
+	  }
 	}
 
 	/**
@@ -640,18 +640,18 @@ function requireDom () {
 	 * @returns {boolean}
 	 */
 	function hasChild(el, child) {
-	    if (el && child) {
-	        return el.contains(child);
-	    }
-	    return false;
+	  if (el && child) {
+	    return el.contains(child);
+	  }
+	  return false;
 	}
 
 	/**
 	 * @description Checks if the document has focus.
 	 * @returns {boolean}
 	 */
-	function documentHasFocus(){
-	    return document.hasFocus();
+	function documentHasFocus() {
+	  return document.hasFocus();
 	}
 
 	/**
@@ -660,13 +660,13 @@ function requireDom () {
 	 * @returns {object}
 	 */
 	function getElementPosition(el) {
-	    const rect = el.getBoundingClientRect();
-	    return {
-	        top: rect.top + window.scrollY,
-	        left: rect.left + window.scrollX,
-	        width: rect.width,
-	        height: rect.height
-	    };
+	  const rect = el.getBoundingClientRect();
+	  return {
+	    top: rect.top + window.scrollY,
+	    left: rect.left + window.scrollX,
+	    width: rect.width,
+	    height: rect.height
+	  };
 	}
 
 
@@ -677,15 +677,15 @@ function requireDom () {
 	 * @param {*} callback 
 	 * @param {*} options 
 	 */
-	function addEventListener(target, event, callback,options={
-	    capture: false,
-	    once: false,
-	    passive: false
+	function addEventListener(target, event, callback, options = {
+	  capture: false,
+	  once: false,
+	  passive: false
 	}) {
 	  if (target.addEventListener) {
 	    target.addEventListener(event, callback, options);
 	  } else if (target.attachEvent) {
-	    target.attachEvent('on' + event, callback,options);
+	    target.attachEvent('on' + event, callback, options);
 	  } else {
 	    target['on' + event] = callback;
 	  }
@@ -696,37 +696,96 @@ function requireDom () {
 	 * @param {*} data 
 	 * @param {*} fileName 
 	 */
-	function downloadFile(data,fileName){
-	    const blob = new Blob([data], { type: 'application/octet-stream' });
+	function downloadFile(data, fileName) {
+	  const blob = new Blob([data], { type: 'application/octet-stream' });
+	  const url = URL.createObjectURL(blob);
+	  const a = document.createElement('a');
+	  a.href = url;
+	  a.download = fileName || 'download';
+	  document.body.appendChild(a);
+	  a.click();
+	  document.body.removeChild(a);
+	  URL.revokeObjectURL(url);
+	}
+
+	/**
+	 * @description Downloads an image from an img element or canvas element.
+	 * @param {*} imgElement 
+	 * @param {*} fileName 
+	 */
+	function downloadImage(imgElement, fileName) {
+	  const canvas = document.createElement('canvas');
+	  canvas.width = imgElement.naturalWidth;
+	  canvas.height = imgElement.naturalHeight;
+	  const ctx = canvas.getContext('2d');
+	  ctx.drawImage(imgElement, 0, 0);
+	  canvas.toBlob((blob) => {
 	    const url = URL.createObjectURL(blob);
 	    const a = document.createElement('a');
 	    a.href = url;
-	    a.download = fileName || 'download';
+	    a.download = fileName || 'download.png';
+
 	    document.body.appendChild(a);
 	    a.click();
 	    document.body.removeChild(a);
 	    URL.revokeObjectURL(url);
+	  }, 'image/png');
 	}
 
-	dom ={
-	    getDomHeight,
-	    getDomWidth,
-	    getViewportHeight,
-	    getViewportWidth,
-	    getScrollTop,
-	    getScrollLeft,
-	    mouseInElement,
-	    mousePositioninElement,
-	    getMousePosition,
-	    getRealElementHeight,
-	    getRealElementWidth,
-	    isElVisible,
-	    removeElement,
-	    hasChild,
-	    documentHasFocus,
-	    getElementPosition,
-	    addEventListener,
-	    downloadFile
+	/**
+	 * @description Downloads an image by its URL.
+	 * @param {*} imgUrl 
+	 * @param {*} fileName 
+	 */
+	function downloadImageByUrl(imgUrl, fileName) {
+	  const img = new Image();
+	  img.crossOrigin = 'anonymous'; // 允许跨域下载
+	  img.onload = function () {
+	    downloadImage(img, fileName);
+	  };
+	  img.src = imgUrl;
+	}
+
+	/**
+	 * @description Uploads a file from an input element and calls a callback with the file data.
+	 * @param {*} fileInput 
+	 * @param {*} callback 
+	 */
+	function uploadFile(fileInput, callback) {
+	  fileInput.addEventListener('change', function () {
+	    const file = fileInput.files[0];
+	    if (file) {
+	      const reader = new FileReader();
+	      reader.onload = function (e) {
+	        callback(e.target.result, file.name);
+	      };
+	      reader.readAsDataURL(file);
+	    }
+	  });
+	}
+
+	dom = {
+	  getDomHeight,
+	  getDomWidth,
+	  getViewportHeight,
+	  getViewportWidth,
+	  getScrollTop,
+	  getScrollLeft,
+	  mouseInElement,
+	  mousePositioninElement,
+	  getMousePosition,
+	  getRealElementHeight,
+	  getRealElementWidth,
+	  isElVisible,
+	  removeElement,
+	  hasChild,
+	  documentHasFocus,
+	  getElementPosition,
+	  addEventListener,
+	  downloadFile,
+	  downloadImage,
+	  downloadImageByUrl,
+	  uploadFile
 	};
 	return dom;
 }
@@ -744,11 +803,79 @@ function requireAsyncUtil () {
 	if (hasRequiredAsyncUtil) return asyncUtil;
 	hasRequiredAsyncUtil = 1;
 	function sleep(ms) {
-	  return new Promise(resolve => setTimeout(resolve, ms));
+	    return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
+	/**
+	 * @description Executes an array of asynchronous functions in order, waiting for each to complete before starting the next.
+	 * @param {*} functions 
+	 */
+	async function executeAsyncFunctionsInOrder(functions) {
+	    for (const func of functions) {
+	        await func();
+	    }
+	}
+
+	/**
+	 * @description Executes an array of asynchronous functions concurrently, waiting for all to complete.
+	 * @param {*} functions 
+	 * @returns {Promise<Array>}
+	 */
+	async function executeAsyncFunctionsConcurrently(functions) {
+	    const result = await Promise.all(functions.map(func => func()));
+	    return result;
+	}
+
+	/**
+	 * @description Runs an array of asynchronous tasks with a specified maximum concurrency.
+	 * @param {*} tasks 
+	 * @param {*} maxConcurrency 
+	 * @returns {Array}
+	 */
+	async function runWithConcurrency(tasks, maxConcurrency) {
+	    const results = [];
+	    let current = 0;
+	    const workers = Array(Math.min(maxConcurrency, tasks.length))
+	        .fill()
+	        .map(async () => {
+	            while (current < tasks.length) {
+	                const index = current++;
+	                try {
+	                    results[index] = await tasks[index]();
+	                } catch (err) {
+	                    results[index] = err;
+	                }
+	            }
+	        });
+
+	    await Promise.all(workers);
+	    return results;
+	}
+
+	/**
+	 * @description Converts a synchronous function to an asynchronous one, allowing it to be used with async/await.
+	 * @param {*} fn 
+	 * @returns {Promise}
+	 */
+	async function asyncify(fn) {
+	    return (...args) => new Promise((resolve, reject) => {
+	        try {
+	            resolve(fn(...args));
+	        } catch (error) {
+	            reject(error);
+	        }
+	    });
+	}
+
+
+
+
 	asyncUtil = {
-	    sleep
+	    sleep,
+	    executeAsyncFunctionsInOrder,
+	    executeAsyncFunctionsConcurrently,
+	    runWithConcurrency,
+	    asyncify
 	};
 	return asyncUtil;
 }
@@ -952,6 +1079,240 @@ function requireObj () {
 	    inheritPrototype
 	};
 	return obj;
+}
+
+/**
+ * @description: a simple type check utility
+ * @param {*} target 
+ * @param {*} type 
+ * @returns 
+ */
+
+var is;
+var hasRequiredIs;
+
+function requireIs () {
+	if (hasRequiredIs) return is;
+	hasRequiredIs = 1;
+	function isType(target, type) {
+	    return Object.prototype.toString.call(target) === `[object ${type}]`;
+	}
+
+	/**
+	 * @description: checks if the target is a valid number (not NaN).
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isNumber(target) {
+	    return isType(target, 'Number') && !isNaN(target);
+	}
+
+	/**
+	 * @description: checks if the target is a valid string.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isString(target) {
+	    return isType(target, 'String');
+	}
+
+	/**
+	 * @description: checks if the target is a valid boolean.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isBoolean(target) {
+	    return isType(target, 'Boolean');
+	}
+
+	/**
+	 * @description: checks if the target is a valid function.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isFunction(target) {
+	    return isType(target, 'Function');
+	}
+
+	/**
+	 * 
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isObject(target) {
+	    return isType(target, 'Object');
+	}
+
+	/**
+	 * @description: checks if the target is an array.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isArray(target) {
+	    return isType(target, 'Array');
+	}
+
+	/**
+	 * @description: checks if the target is null.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isNull(target) {
+	    return target === null;
+	}
+
+	/**
+	 * @description: checks if the target is undefined.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isUndefined(target) {
+	    return target === undefined;
+	}
+
+	/**
+	 * @description: checks if the target is a symbol.
+	 * @param {*} target 
+	 * @returns 
+	 */
+	function isSymbol(target) {
+	    return isType(target, 'Symbol');
+	}
+
+	/**
+	 * @description: checks if the target is a BigInt.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isBigInt(target) {
+	    return isType(target, 'BigInt');
+	}
+
+	/**
+	 * @description: checks if the target is a Date object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isDate(target) {
+	    return isType(target, 'Date');
+	}
+
+	/**
+	 * @description: checks if the target is a RegExp object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isRegExp(target) {
+	    return isType(target, 'RegExp');
+	}
+
+	/**
+	 * @description: checks if the target is an Error object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isError(target) {
+	    return isType(target, 'Error');
+	}
+
+	/**
+	 * @description: checks if the target is a Map object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isMap(target) {
+	    return isType(target, 'Map');
+	}
+
+	/**
+	 * @description: checks if the target is a Set object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isSet(target) {
+	    return isType(target, 'Set');
+	}
+
+	/**
+	 * @description: checks if the target is a WeakMap object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isWeakMap(target) {
+	    return isType(target, 'WeakMap');
+	}
+
+	/**
+	 * @description: checks if the target is a WeakSet object.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isWeakSet(target) {
+	    return isType(target, 'WeakSet');
+	}
+
+	/**
+	 * @description: checks if the target is an ArrayBuffer.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isArrayBuffer(target) {
+	    return isType(target, 'ArrayBuffer');
+	}
+
+	/**
+	 * @description: checks if the target is a TypedArray (like Int8Array, Uint8Array, etc.).
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isTypedArray(target) {
+	    return isType(target, 'TypedArray');
+	}
+
+	/**
+	 * @description: checks if the target is a DataView.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isDataView(target) {
+	    return isType(target, 'DataView');
+	}
+
+	/**
+	 * @description: checks if the target is a Promise.
+	 * @param {*} target 
+	 * @returns {boolean}
+	 */
+	function isPromise(target) {
+	    return typeof target.then === 'function' && isType(target, 'Promise');
+	}
+
+
+	is = {
+	    isType,
+	    isNumber,
+	    isString,
+	    isBoolean,
+	    isFunction,
+	    isObject,
+	    isArray,
+	    isNull,
+	    isUndefined,
+	    isSymbol,
+	    isBigInt,
+	    isDate,
+	    isRegExp,
+	    isError,
+	    isMap,
+	    isSet,
+	    isWeakMap,
+	    isWeakSet,
+	    isArrayBuffer,
+	    isTypedArray,
+	    isDataView,
+	    isPromise
+	};
+	return is;
 }
 
 /**
@@ -1586,6 +1947,7 @@ function requireFrontendUtil () {
 	const AsyncUtil = requireAsyncUtil();
 	const Arr = require$$6;
 	const Obj = requireObj();
+	const Is = requireIs();
 
 	const Queue = requireQueue();
 	const Stack = requireStack();
@@ -1603,6 +1965,7 @@ function requireFrontendUtil () {
 	    AsyncUtil,
 	    Arr,
 	    Obj,
+	    Is,
 
 	    Queue,
 	    Stack,
