@@ -16,19 +16,19 @@ const LinkedList = require('./src/LinkedList.js');
 const Request = require('./src/Request.js');
 
 module.exports = {
-    Date,
-    Num,
-    math,
-    env,
-    dom,
-    AsyncUtil,
-    Arr,
-    Obj,
-    Is,
+    ...Date,
+    ...Num,
+    ...math,
+    ...env,
+    ...dom,
+    ...AsyncUtil,
+    ...Arr,
+    ...Obj,
+    ...Is,
 
-    Queue,
-    Stack,
-    Grahp,
-    LinkedList,
-    Request
+    ...Queue,
+    ...Stack,
+    ...Grahp,
+    ...LinkedList,
+    ...Request
 }

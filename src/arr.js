@@ -4,7 +4,7 @@
  * @param {*} start 
  * @returns {Array}
  */
-export function generateNumbers(n, start = 1) {
+ function generateNumbers(n, start = 1) {
     return Array.from({ length: n }, (_, i) => start + i);
 }
 
@@ -14,7 +14,7 @@ export function generateNumbers(n, start = 1) {
  * @param {*} depth 
  * @returns {Array}
  */
-export function flattenArray(arr, depth = 1) {
+ function flattenArray(arr, depth = 1) {
     return depth > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flattenArray(val, depth - 1) : val), []) : arr.slice();
 }
 
@@ -24,7 +24,7 @@ export function flattenArray(arr, depth = 1) {
  * @param {*} value 
  * @returns 
  */
-export function removeDuplicates(arr, value) {
+ function removeDuplicates(arr, value) {
     return arr.filter(item => item !== value);
 }
 
@@ -34,7 +34,7 @@ export function removeDuplicates(arr, value) {
  * @param {*} value 
  * @returns 
  */
-export function findAllIndexes(arr, value) {
+ function findAllIndexes(arr, value) {
     return arr.reduce((acc, item, index) => {
         if (item === value) acc.push(index);
         return acc;
@@ -46,7 +46,7 @@ export function findAllIndexes(arr, value) {
  * @param {*} arr 
  * @returns {boolean}
  */
-export function isEmptyArray(arr) {
+ function isEmptyArray(arr) {
     return Array.isArray(arr) && arr.length === 0;
 }
 
@@ -55,7 +55,7 @@ export function isEmptyArray(arr) {
  * @param {*} arr 
  * @returns 
  */
-export function sortArrayAscending(arr) {
+ function sortArrayAscending(arr) {
     return arr.slice().sort((a, b) => a - b);
 }
 
@@ -64,7 +64,7 @@ export function sortArrayAscending(arr) {
  * @param {*} arr 
  * @returns 
  */
-export function sortArrayDescending(arr) {
+ function sortArrayDescending(arr) {
     return arr.slice().sort((a, b) => b - a);
 }
 
@@ -73,7 +73,7 @@ export function sortArrayDescending(arr) {
  * @param {*} arr 
  * @returns 
  */
-export function bubbleSort(arr) {
+ function bubbleSort(arr) {
     const len = arr.length;
     for (let i = 0; i < len - 1; i++) {
         for (let j = 0; j < len - 1 - i; j++) {
@@ -90,7 +90,7 @@ export function bubbleSort(arr) {
  * @param {*} arr 
  * @returns 
  */
-export function uniqueArray(arr) {
+ function uniqueArray(arr) {
     return Array.from(new Set(arr));
 }
 
