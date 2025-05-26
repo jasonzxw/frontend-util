@@ -21,7 +21,8 @@
     "number",
     "math",
     "date",
-    "data structure"
+    "data structure",
+    "async"
   ],
   "author": "jason_zuo",
   "license": "MIT",
