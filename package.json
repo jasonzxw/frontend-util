@@ -15,7 +15,13 @@
   },
   "keywords": [
     "util",
-    "package"
+    "dom",
+    "array",
+    "object",
+    "number",
+    "math",
+    "date",
+    "data structure"
   ],
   "author": "jason_zuo",
   "license": "MIT",
