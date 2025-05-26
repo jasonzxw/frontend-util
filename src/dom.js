@@ -71,15 +71,15 @@ function mouseInElement(element, x, y) {
  * @returns {object}
  */
 function mousePositioninElement(element, event) {
-    const { x, y } = getMousePosition(event);
-    if(!mouseInElement(element, x, y)) {
-        return null;
-    }
-    const rect = element.getBoundingClientRect();
-    return {
-        x: x - rect.left,
-        y: y - rect.top
-    };
+  const { x, y } = getMousePosition(event);
+  if (!mouseInElement(element, x, y)) {
+    return null;
+  }
+  const rect = element.getBoundingClientRect();
+  return {
+    x: x - rect.left,
+    y: y - rect.top
+  };
 }
 
 /**
@@ -99,7 +99,7 @@ function getMousePosition(event) {
  * @returns {number}
  */
 function getRealElementHeight(element) {
-    return element.scrollHeight;
+  return element.scrollHeight;
 }
 
 /**
@@ -108,7 +108,7 @@ function getRealElementHeight(element) {
  * @returns {number}
  */
 function getRealElementWidth(element) {
-    return element.scrollWidth;
+  return element.scrollWidth;
 }
 
 /**
@@ -117,7 +117,7 @@ function getRealElementWidth(element) {
  * @returns {boolean}
  */
 function isElVisible(el) {
-    return el.offsetWidth > 0 && el.offsetHeight > 0;
+  return el.offsetWidth > 0 && el.offsetHeight > 0;
 }
 
 /**
@@ -125,9 +125,9 @@ function isElVisible(el) {
  * @param {*} el 
  */
 function removeElement(el) {
-    if (el && el.parentNode) {
-        el.parentNode.removeChild(el);
-    }
+  if (el && el.parentNode) {
+    el.parentNode.removeChild(el);
+  }
 }
 
 /**
@@ -137,18 +137,18 @@ function removeElement(el) {
  * @returns {boolean}
  */
 function hasChild(el, child) {
-    if (el && child) {
-        return el.contains(child);
-    }
-    return false;
+  if (el && child) {
+    return el.contains(child);
+  }
+  return false;
 }
 
 /**
  * @description Checks if the document has focus.
  * @returns {boolean}
  */
-function documentHasFocus(){
-    return document.hasFocus();
+function documentHasFocus() {
+  return document.hasFocus();
 }
 
 /**
@@ -157,13 +157,13 @@ function documentHasFocus(){
  * @returns {object}
  */
 function getElementPosition(el) {
-    const rect = el.getBoundingClientRect();
-    return {
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height
-    };
+  const rect = el.getBoundingClientRect();
+  return {
+    top: rect.top + window.scrollY,
+    left: rect.left + window.scrollX,
+    width: rect.width,
+    height: rect.height
+  };
 }
 
 
@@ -174,15 +174,15 @@ function getElementPosition(el) {
  * @param {*} callback 
  * @param {*} options 
  */
-function addEventListener(target, event, callback,options={
-    capture: false,
-    once: false,
-    passive: false
+function addEventListener(target, event, callback, options = {
+  capture: false,
+  once: false,
+  passive: false
 }) {
   if (target.addEventListener) {
     target.addEventListener(event, callback, options);
   } else if (target.attachEvent) {
-    target.attachEvent('on' + event, callback,options);
+    target.attachEvent('on' + event, callback, options);
   } else {
     target['on' + event] = callback;
   }
@@ -193,35 +193,94 @@ function addEventListener(target, event, callback,options={
  * @param {*} data 
  * @param {*} fileName 
  */
-function downloadFile(data,fileName){
-    const blob = new Blob([data], { type: 'application/octet-stream' });
+function downloadFile(data, fileName) {
+  const blob = new Blob([data], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName || 'download';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * @description Downloads an image from an img element or canvas element.
+ * @param {*} imgElement 
+ * @param {*} fileName 
+ */
+function downloadImage(imgElement, fileName) {
+  const canvas = document.createElement('canvas');
+  canvas.width = imgElement.naturalWidth;
+  canvas.height = imgElement.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(imgElement, 0, 0);
+  canvas.toBlob((blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = fileName || 'download';
+    a.download = fileName || 'download.png';
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }, 'image/png');
 }
 
-module.exports ={
-    getDomHeight,
-    getDomWidth,
-    getViewportHeight,
-    getViewportWidth,
-    getScrollTop,
-    getScrollLeft,
-    mouseInElement,
-    mousePositioninElement,
-    getMousePosition,
-    getRealElementHeight,
-    getRealElementWidth,
-    isElVisible,
-    removeElement,
-    hasChild,
-    documentHasFocus,
-    getElementPosition,
-    addEventListener,
-    downloadFile
+/**
+ * @description Downloads an image by its URL.
+ * @param {*} imgUrl 
+ * @param {*} fileName 
+ */
+function downloadImageByUrl(imgUrl, fileName) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous'; // 允许跨域下载
+  img.onload = function () {
+    downloadImage(img, fileName);
+  };
+  img.src = imgUrl;
+}
+
+/**
+ * @description Uploads a file from an input element and calls a callback with the file data.
+ * @param {*} fileInput 
+ * @param {*} callback 
+ */
+function uploadFile(fileInput, callback) {
+  fileInput.addEventListener('change', function () {
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        callback(e.target.result, file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+module.exports = {
+  getDomHeight,
+  getDomWidth,
+  getViewportHeight,
+  getViewportWidth,
+  getScrollTop,
+  getScrollLeft,
+  mouseInElement,
+  mousePositioninElement,
+  getMousePosition,
+  getRealElementHeight,
+  getRealElementWidth,
+  isElVisible,
+  removeElement,
+  hasChild,
+  documentHasFocus,
+  getElementPosition,
+  addEventListener,
+  downloadFile,
+  downloadImage,
+  downloadImageByUrl,
+  uploadFile
 }
