@@ -40,7 +40,7 @@ var hasRequiredDate;
 function requireDate () {
 	if (hasRequiredDate) return date;
 	hasRequiredDate = 1;
-	function getCurrentLocalDateTime(){
+	function getCurrentLocalDateTime() {
 	    const date = new Date();
 	    return date.toLocaleString();
 	}
@@ -50,7 +50,7 @@ function requireDate () {
 	 * @param {*} date 
 	 * @returns 
 	 */
-	function getSpecificLocalDateTime(date){
+	function getSpecificLocalDateTime(date) {
 	    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
 	    return date.toLocaleString(undefined, options);
 	}
@@ -60,7 +60,7 @@ function requireDate () {
 	 * @description This function returns the current local date.
 	 * @returns {string} Current date in the format YYYY-MM-DD
 	 */
-	function getCurrentLocalDate(){
+	function getCurrentLocalDate() {
 	    const date = new Date();
 	    return date.toLocaleDateString();
 	}
@@ -70,7 +70,7 @@ function requireDate () {
 	 * @param {*} date 
 	 * @returns 
 	 */
-	function getSpecificLocalDate(date){
+	function getSpecificLocalDate(date) {
 	    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 	    return date.toLocaleDateString(undefined, options);
 	}
@@ -79,7 +79,7 @@ function requireDate () {
 	 * @description This function returns the current local time.
 	 * @returns {string} Current time in the format HH:MM:SS
 	 */
-	function getCurrentLocalTime(){
+	function getCurrentLocalTime() {
 	    const date = new Date();
 	    return date.toLocaleTimeString();
 	}
@@ -89,7 +89,7 @@ function requireDate () {
 	 * @param {*} date 
 	 * @returns 
 	 */
-	function getSpecificTime(date){
+	function getSpecificTime(date) {
 	    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
 	    return date.toLocaleTimeString(undefined, options);
 	}
@@ -100,7 +100,7 @@ function requireDate () {
 	 * 
 	 * @returns {string} Current  UTC date
 	 */
-	function getUtcTime(){
+	function getUtcTime() {
 	    const date = new Date();
 	    return date.toUTCString();
 	}
@@ -111,7 +111,7 @@ function requireDate () {
 	 * @param {*} format 
 	 * @returns 
 	 */
-	function getFormattedDate(date,format){
+	function getFormattedDate(date, format) {
 	    const year = date.getFullYear();
 	    const month = date.getMonth() + 1; // Months are zero-based
 	    const day = date.getDate();
@@ -128,7 +128,7 @@ function requireDate () {
 	 * @param {*} format 
 	 * @returns 
 	 */
-	function getFormattedTime(date,format){
+	function getFormattedTime(date, format) {
 	    const hours = date.getHours();
 	    const minutes = date.getMinutes();
 	    const seconds = date.getSeconds();
@@ -145,9 +145,84 @@ function requireDate () {
 	 * @param {*} format 
 	 * @returns 
 	 */
-	function getSpecificDateTime(date,format){
-	    return getFormattedDate(date,format) + ' ' + getFormattedTime(date,format);
+	function getSpecificDateTime(date, format) {
+	    return getFormattedDate(date, format) + ' ' + getFormattedTime(date, format);
 	}
+
+	/**
+	 * @description This function returns a relative time string based on the given date.
+	 * @param {*} date 
+	 * @returns {string} Relative time string like "2 days ago", "1 hour ago", etc.
+	 */
+	function getRelativeTime(date) {
+	    const now = new Date();
+	    const diffInSeconds = Math.floor((now - date) / 1000);
+
+	    const intervals = {
+	        year: 31536000,
+	        month: 2592000,
+	        day: 86400,
+	        hour: 3600,
+	        min: 60,
+	        sec: 1,
+	    };
+
+	    for (const [unit, seconds] of Object.entries(intervals)) {
+	        const count = Math.floor(diffInSeconds / seconds);
+	        if (count >= 1) {
+	            return `${count}${count > 1 ? unit + 's' : unit} ago`;
+	        }
+	    }
+	    return 'just now';
+	}
+
+	/**
+	 * @description This function calculates the difference between two dates in the specified unit.
+	 * @param {*} date1 
+	 * @param {*} date2 
+	 * @param {*} unit 'day' |'hour'|'minute'|'second'|'year'|'month' 
+	 * @returns {number} Difference in the specified unit
+	 */
+	function dateDiff(date1, date2, unit = 'day') {
+	    const diffInMs = Math.abs(date2 - date1);
+	    switch (unit) {
+	        case 'year':
+	            return date2.getFullYear() - date1.getFullYear();
+	        case 'month':
+	            return (date2.getFullYear() - date1.getFullYear()) * 12 +
+	                (date2.getMonth() - date1.getMonth());
+	        case 'day':
+	            return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+	        case 'hour':
+	            return Math.floor(diffInMs / (1000 * 60 * 60));
+	        case 'minute':
+	            return Math.floor(diffInMs / (1000 * 60));
+	        case 'second':
+	            return Math.floor(diffInMs / 1000);
+	        default:
+	            throw new Error('Invalid unit for date difference');
+	    }
+	}
+
+	/**
+	 * @description This function returns the first day of the month for a given date.
+	 * @param {*} date 
+	 * @returns 
+	 */
+	function getFirstDayOfMonth(date) {
+	    return new Date(date.getFullYear(), date.getMonth(), 1);
+	}
+
+	/**
+	 * @description This function returns the last day of the month for a given date.
+	 * @param {*} date 
+	 * @returns {number} Last day of the month
+	 */
+	function getLastDayOfMonth(date) {
+	    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+	}
+
+
 
 	date = {
 	    getCurrentLocalDateTime,
@@ -159,7 +234,11 @@ function requireDate () {
 	    getUtcTime,
 	    getFormattedDate,
 	    getFormattedTime,
-	    getSpecificDateTime
+	    getSpecificDateTime,
+	    getRelativeTime,
+	    dateDiff,
+	    getFirstDayOfMonth,
+	    getLastDayOfMonth
 	};
 	return date;
 }
@@ -270,7 +349,52 @@ function requireNumber () {
 	    return parseFloat(num.replace(/,/g, ''));
 	}
 
+	/**
+	 * @description: This function clamps a number between a minimum and maximum value.
+	 * @param {*} num 
+	 * @param {*} min 
+	 * @param {*} max 
+	 * @returns 
+	 */
+	function clampNumber(num, min, max) {
+	    return Math.min(Math.max(num, min), max);
+	}
 
+	/**
+	 * @description: This function converts a number from one(10) base to another(2-36).
+	 * @param {*} number 
+	 * @param {*} base 
+	 * @returns {string}
+	 */
+	function convertBase(number,base=10){
+	    if (typeof number !== 'number' || isNaN(number)) {
+	        throw new Error('Invalid number');
+	    }
+	    if (base < 2 || base > 36) {
+	        throw new Error('Base must be between 2 and 36');
+	    }
+	    return number.toString(base);
+	}
+
+	/**
+	 * @description: This function checks if a number is an integer.
+	 * @param {*} num 
+	 * @returns {boolean}
+	 */
+	function isInteger(num) {
+	    return Number.isInteger(num);
+	}
+
+	/**
+	 * @description: This function pads a number with a specified character to a specified length.
+	 * @param {*} num 
+	 * @param {*} padNum 
+	 * @param {*} length 
+	 * @returns {string}
+	 */
+	function padNumber(num, padNum ,length = 2) {
+	    return num.toString().padStart(length, padNum.toString());
+	}
 
 	number = {
 	    getNthLargest,
@@ -280,7 +404,11 @@ function requireNumber () {
 	    multiplyFloat,
 	    divideFloat,
 	    formatNumber,
-	    convertToDecimal
+	    convertToDecimal,
+	    clampNumber,
+	    convertBase,
+	    isInteger,
+	    padNumber
 	};
 	return number;
 }
@@ -766,6 +894,56 @@ function requireDom () {
 	  });
 	}
 
+	/**
+	 * @description Copies text to the clipboard.
+	 * @param {*} text 
+	 * @returns {Promise<boolean>}
+	 */
+	async function copyToClipboard(text) {
+	  try {
+	    if (navigator.clipboard && navigator.clipboard.writeText) {
+	      await navigator.clipboard.writeText('复制的文本');
+	      return true;
+	    } else {
+	      const textArea = document.createElement('textarea');
+	      textArea.value = text;
+	      textArea.style.position = 'fixed';
+	      document.body.appendChild(textArea);
+	      textArea.focus();
+	      textArea.select();
+	      const success = document.execCommand('copy');
+	      document.body.removeChild(textArea);
+	      return success;
+	    }
+	  } catch (err) {
+	    console.error('Failed to copy text to clipboard:', err);
+	    return false
+	  }
+	}
+
+	/**
+	 * @description Reads text from the clipboard.
+	 * @returns {Promise<string>}
+	 */
+	async function readFromClipboard() {
+	  try {
+	    if (navigator.clipboard && navigator.clipboard.readText) {
+	      return await navigator.clipboard.readText();
+	    }else {
+	      const textArea = document.createElement('textarea');
+	      textArea.style.position = 'fixed';
+	      document.body.appendChild(textArea);
+	      textArea.focus();
+	      document.execCommand('paste');
+	      const text = textArea.value;
+	      document.body.removeChild(textArea);
+	      return text;
+	    }
+	  } catch (err) {
+	    console.error('Failed to read from clipboard:', err);
+	  }
+	}
+
 	dom = {
 	  getDomHeight,
 	  getDomWidth,
@@ -787,7 +965,9 @@ function requireDom () {
 	  downloadFile,
 	  downloadImage,
 	  downloadImageByUrl,
-	  uploadFile
+	  uploadFile,
+	  copyToClipboard,
+	  readFromClipboard
 	};
 	return dom;
 }
@@ -1004,84 +1184,6 @@ var arr = /*#__PURE__*/Object.freeze({
 });
 
 var require$$6 = /*@__PURE__*/getAugmentedNamespace(arr);
-
-/**
- * @description Deep clones an object or array.
- * @param {*} target 
- * @returns 
- */
-
-var obj;
-var hasRequiredObj;
-
-function requireObj () {
-	if (hasRequiredObj) return obj;
-	hasRequiredObj = 1;
-	function deepClone(target) {
-	    if (target === null || typeof target !== 'object') {
-	        return target;
-	    }
-
-	    if (typeof target !== "object" || target === null) return target;
-	    const clone = Array.isArray(target) ? [] : {};
-	    for (const key in target) clone[key] = deepClone(target[key]);
-	    return clone;
-	}
-
-	/**
-	 * @description Shallow clones an object or array.
-	 * @param {*} target 
-	 * @returns 
-	 */
-	function shallowClone(target) {
-	    if (target === null || typeof target !== 'object') {
-	        return target;
-	    }
-	    return Array.isArray(target) ? [...target] : { ...target };
-	}
-
-	/**
-	 * @description Checks if two objects or arrays are equal.
-	 * @param {*} obj1 
-	 * @param {*} obj2 
-	 * @returns 
-	 */
-	function isEqual(obj1, obj2) {
-	    if (obj1 === obj2) return true;
-	    if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) return false;
-
-	    const keys1 = Object.keys(obj1);
-	    const keys2 = Object.keys(obj2);
-
-	    if (keys1.length !== keys2.length) return false;
-
-	    for (const key of keys1) {
-	        if (!keys2.includes(key) || !isEqual(obj1[key], obj2[key])) {
-	            return false;
-	        }
-	    }
-
-	    return true;
-	}
-
-	/**
-	 * @description inherits the prototype of a parent class for a child class.
-	 * @param {*} child 
-	 * @param {*} parent 
-	 */
-	function inheritPrototype(child, parent) {
-	    child.prototype = Object.create(parent.prototype);
-	    child.prototype.constructor = child;
-	}
-
-	obj ={
-	    deepClone,
-	    shallowClone,
-	    isEqual,
-	    inheritPrototype
-	};
-	return obj;
-}
 
 /**
  * @description: a simple type check utility
@@ -1315,6 +1417,141 @@ function requireIs () {
 	    isPromise
 	};
 	return is;
+}
+
+/**
+ * @description Deep clones an object or array.
+ * @param {*} target 
+ * @returns 
+ */
+
+var obj;
+var hasRequiredObj;
+
+function requireObj () {
+	if (hasRequiredObj) return obj;
+	hasRequiredObj = 1;
+	const { isObject } = requireIs();
+
+	function deepClone(target) {
+	    if (target === null || typeof target !== 'object') {
+	        return target;
+	    }
+
+	    if (typeof target !== "object" || target === null) return target;
+	    const clone = Array.isArray(target) ? [] : {};
+	    for (const key in target) clone[key] = deepClone(target[key]);
+	    return clone;
+	}
+
+	/**
+	 * @description Shallow clones an object or array.
+	 * @param {*} target 
+	 * @returns 
+	 */
+	function shallowClone(target) {
+	    if (target === null || typeof target !== 'object') {
+	        return target;
+	    }
+	    return Array.isArray(target) ? [...target] : { ...target };
+	}
+
+	/**
+	 * @description Checks if two objects or arrays are equal.
+	 * @param {*} obj1 
+	 * @param {*} obj2 
+	 * @returns 
+	 */
+	function isEqual(obj1, obj2) {
+	    if (obj1 === obj2) return true;
+	    if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) return false;
+
+	    const keys1 = Object.keys(obj1);
+	    const keys2 = Object.keys(obj2);
+
+	    if (keys1.length !== keys2.length) return false;
+
+	    for (const key of keys1) {
+	        if (!keys2.includes(key) || !isEqual(obj1[key], obj2[key])) {
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
+
+	/**
+	 * @description inherits the prototype of a parent class for a child class.
+	 * @param {*} child 
+	 * @param {*} parent 
+	 */
+	function inheritPrototype(child, parent) {
+	    child.prototype = Object.create(parent.prototype);
+	    child.prototype.constructor = child;
+	}
+
+	/**
+	 * @description Checks if an object is empty.
+	 * @param {*} obj 
+	 * @returns {boolean}
+	 */
+	function isEmptyObject(obj) {
+	    return obj.constructor === Object && Object.keys(obj).length === 0;
+	}
+
+	/**
+	 * @description Picks specific keys from an object.
+	 * @param {*} obj 
+	 * @param {*} keys 
+	 * @returns {object}
+	 */
+	function pick(obj, keys) {
+	    if (!isObject(obj)) return {};
+	    if (!Array.isArray(keys)) throw new TypeError('keys must be an array');
+	    return keys.reduce((acc, key) => {
+	        if (obj.hasOwnProperty(key)) acc[key] = obj[key];
+	        return acc;
+	    }, {});
+	}
+
+	/**
+	 * @description Omits specific keys from an object.
+	 * @param {*} obj 
+	 * @param {*} keys 
+	 * @returns {object}
+	 */
+	function omit(obj, keys) {
+	    if (!isObject(obj)) return {};
+	    if (!Array.isArray(keys)) throw new TypeError('keys must be an array');
+	    return Object.keys(obj).reduce((acc, key) => {
+	        if (!keys.includes(key)) acc[key] = obj[key];
+	        return acc;
+	    }, {});
+	}
+
+	/**
+	 * @description Converts an object to a query string.
+	 * @param {*} obj 
+	 * @returns {string}
+	 */
+	function objectToQueryString(obj) {
+	    if (!isObject(obj)) return '';
+	    return Object.entries(obj)
+	        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+	        .join('&');
+	}
+
+	obj = {
+	    deepClone,
+	    shallowClone,
+	    isEqual,
+	    inheritPrototype,
+	    isEmptyObject,
+	    pick,
+	    omit,
+	    objectToQueryString
+	};
+	return obj;
 }
 
 /**

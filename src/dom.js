@@ -261,6 +261,56 @@ function uploadFile(fileInput, callback) {
   });
 }
 
+/**
+ * @description Copies text to the clipboard.
+ * @param {*} text 
+ * @returns {Promise<boolean>}
+ */
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText('复制的文本');
+      return true;
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return success;
+    }
+  } catch (err) {
+    console.error('Failed to copy text to clipboard:', err);
+    return false
+  }
+}
+
+/**
+ * @description Reads text from the clipboard.
+ * @returns {Promise<string>}
+ */
+async function readFromClipboard() {
+  try {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      return await navigator.clipboard.readText();
+    }else{
+      const textArea = document.createElement('textarea');
+      textArea.style.position = 'fixed';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      document.execCommand('paste');
+      const text = textArea.value;
+      document.body.removeChild(textArea);
+      return text;
+    }
+  } catch (err) {
+    console.error('Failed to read from clipboard:', err);
+  }
+}
+
 module.exports = {
   getDomHeight,
   getDomWidth,
@@ -282,5 +332,7 @@ module.exports = {
   downloadFile,
   downloadImage,
   downloadImageByUrl,
-  uploadFile
+  uploadFile,
+  copyToClipboard,
+  readFromClipboard
 }

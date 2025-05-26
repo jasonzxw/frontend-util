@@ -97,7 +97,52 @@ function convertToDecimal(num) {
     return parseFloat(num.replace(/,/g, ''));
 }
 
+/**
+ * @description: This function clamps a number between a minimum and maximum value.
+ * @param {*} num 
+ * @param {*} min 
+ * @param {*} max 
+ * @returns 
+ */
+function clampNumber(num, min, max) {
+    return Math.min(Math.max(num, min), max);
+}
 
+/**
+ * @description: This function converts a number from one(10) base to another(2-36).
+ * @param {*} number 
+ * @param {*} base 
+ * @returns {string}
+ */
+function convertBase(number,base=10){
+    if (typeof number !== 'number' || isNaN(number)) {
+        throw new Error('Invalid number');
+    }
+    if (base < 2 || base > 36) {
+        throw new Error('Base must be between 2 and 36');
+    }
+    return number.toString(base);
+}
+
+/**
+ * @description: This function checks if a number is an integer.
+ * @param {*} num 
+ * @returns {boolean}
+ */
+function isInteger(num) {
+    return Number.isInteger(num);
+}
+
+/**
+ * @description: This function pads a number with a specified character to a specified length.
+ * @param {*} num 
+ * @param {*} padNum 
+ * @param {*} length 
+ * @returns {string}
+ */
+function padNumber(num, padNum ,length = 2) {
+    return num.toString().padStart(length, padNum.toString());
+}
 
 module.exports = {
     getNthLargest,
@@ -107,5 +152,9 @@ module.exports = {
     multiplyFloat,
     divideFloat,
     formatNumber,
-    convertToDecimal
+    convertToDecimal,
+    clampNumber,
+    convertBase,
+    isInteger,
+    padNumber
 }
